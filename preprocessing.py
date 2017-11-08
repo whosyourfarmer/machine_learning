@@ -14,9 +14,9 @@ print(__doc__)
 import numpy as np
 from sklearn import preprocessing
 
-#mydata = np.genfromtxt('./Facebook_Dataset/Training/Features_Variant_1.csv',delimiter=',')
+mydata = np.genfromtxt('./Facebook_Dataset/Training/Features_Variant_1.csv',delimiter=',')
 #mydata = np.genfromtxt('./Facebook_Dataset/Testing/TestSet/Test_Case_1.csv',delimiter=',')
-mydata = np.genfromtxt('./Facebook_Dataset/Testing/Features_TestSet.csv',delimiter=',')
+#mydata = np.genfromtxt('./Facebook_Dataset/Testing/Features_TestSet.csv',delimiter=',')
 mydata_y = mydata[:,-1]
 mydata_y = mydata[:,-1]
 mydata_x = mydata[:,0:-1]
@@ -28,7 +28,7 @@ for i in mydata[:,3]:
 	row += 1
 matrix = np.column_stack((mydata_x,myfeature))
 matrix = np.delete(matrix,3,1)
-#np.savetxt("./training/train_x_V1.csv",matrix,delimiter=",")
-#np.savetxt("./training/train_y_V1.csv",mydata_y,delimiter=",")
-np.savetxt("./testing/test_x_total.csv",matrix,delimiter=",")
-np.savetxt("./testing/test_y_total.csv",mydata_y,delimiter=",")
+np.savetxt("./training/train_x_V1.csv",matrix,delimiter=",")
+np.savetxt("./training/train_y_V1.csv",mydata_y,delimiter=",")
+#np.savetxt("./testing/test_x_total.csv",matrix,delimiter=",")
+#np.savetxt("./testing/test_y_total.csv",mydata_y,delimiter=",")

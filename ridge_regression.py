@@ -34,10 +34,10 @@ def ridgeRegression(X_val,Y_val,X_tra,Y_tra,regur):
 	err_valid = np.dot(np.transpose(eMat),np.ones((len(eMat),1))) / X_val.shape[0]
 	return [err_valid,err_train]
 
-train_x = np.genfromtxt('train_x_V1.csv',delimiter=',')
-train_y = np.genfromtxt('train_y_V1.csv',delimiter=',')
-test_x = np.genfromtxt('test_x_total.csv',delimiter=',')
-test_y = np.genfromtxt('test_y_total.csv',delimiter=',')
+train_x = np.genfromtxt('./training/train_x_V1.csv',delimiter=',')
+train_y = np.genfromtxt('./training/train_y_V1.csv',delimiter=',')
+test_x = np.genfromtxt('./testing/test_x_total.csv',delimiter=',')
+test_y = np.genfromtxt('./testing/test_y_total.csv',delimiter=',')
 fold, repeat = 5,1
 minErr,l = 10000,0
 error_valid,error_train = 0,0

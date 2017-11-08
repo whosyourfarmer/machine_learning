@@ -28,7 +28,7 @@ for i in mydata[:,3]:
 	row += 1
 matrix = np.column_stack((mydata_x,myfeature))
 matrix = np.delete(matrix,3,1)
-#np.savetxt("train_x_V1.csv",matrix,delimiter=",")
-#np.savetxt("train_y_V1.csv",mydata_y,delimiter=",")
-np.savetxt("test_x_total.csv",matrix,delimiter=",")
-np.savetxt("test_y_total.csv",mydata_y,delimiter=",")
+#np.savetxt("./training/train_x_V1.csv",matrix,delimiter=",")
+#np.savetxt("./training/train_y_V1.csv",mydata_y,delimiter=",")
+np.savetxt("./testing/test_x_total.csv",matrix,delimiter=",")
+np.savetxt("./testing/test_y_total.csv",mydata_y,delimiter=",")

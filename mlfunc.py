@@ -16,7 +16,21 @@ def accuracyMeasure(testing,prediction,percent=0,option='MAE'):
 	elif option == 'MSE' or option == 'mse':
 		return metrics.mean_squared_error(test_s[int(percent*len(test_s)):],result_s[int(percent*len(result_s)):])
 	else:
+		test_index = [x for x in range(len(testing))]
+		predict_map = [0 for x in range(len(prediction))]
+		sort_test,sort_index = zip(*sorted(zip(testing,test_index)))
+		for i in range(int(percent*len(testing))):
+			predict_map[sort_index[len(testing)-1-i]] = 1
+		sort_predict,sort_map = zip(*sorted(zip(prediction,predict_map)))
+		sum = 0
+		for i in range(int(percent*len(prediction))):
+			sum += sort_map[len(prediction)-1-i]
+		if option == 'prec':
+			return sum/int(percent*len(prediction))
+		elif option == 'recall':
+	 		return sum/(len(prediction)-2*int(percent*len(prediction)+2*sum))
 		return 0
+
 
 def matrixSplit(X_tra,Y_tra,fold,i):
 	num = X_tra.shape[0]

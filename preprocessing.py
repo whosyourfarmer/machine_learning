@@ -15,7 +15,7 @@ import numpy as np
 from sklearn import preprocessing
 
 mydata = np.genfromtxt('./Facebook_Dataset/Training/Features_Variant_5.csv',delimiter=',')
-#mydata = np.genfromtxt('./Facebook_Dataset/Testing/TestSet/Test_Case_1.csv',delimiter=',')
+#mydata = np.genfromtxt('./Facebook_Dataset/Testing/TestSet/Test_Case_10.csv',delimiter=',')
 #mydata = np.genfromtxt('./Facebook_Dataset/Testing/Features_TestSet.csv',delimiter=',')
 mydata_y = mydata[:,-1]
 mydata_y = mydata[:,-1]
@@ -30,5 +30,5 @@ matrix = np.column_stack((mydata_x,myfeature))
 matrix = np.delete(matrix,3,1)
 np.savetxt("./training/train_x_V5.csv",matrix,delimiter=",")
 np.savetxt("./training/train_y_V5.csv",mydata_y,delimiter=",")
-#np.savetxt("./testing/test_x_total.csv",matrix,delimiter=",")
-#np.savetxt("./testing/test_y_total.csv",mydata_y,delimiter=",")
+#np.savetxt("./testing/test_x_10.csv",matrix,delimiter=",")
+#np.savetxt("./testing/test_y_10.csv",mydata_y,delimiter=",")

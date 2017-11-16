@@ -20,19 +20,20 @@ def ridgeRegression(X_val,Y_val,X_tra,Y_tra,regur,figure):
 	ridgereg = linear_model.Ridge(alpha=regur)
 	ridgereg.fit(X_tra,Y_tra)
 	result = ridgereg.predict(X_tra)
-	err_train = func.accuracyMeasure(Y_tra,result,0.8,'mae')
+	err_train = func.accuracyMeasure(Y_tra,result,0.1,'prec')
 	result = ridgereg.predict(X_val)
-	err_valid = func.accuracyMeasure(Y_val,result,0.8,'mae')
+	err_valid = func.accuracyMeasure(Y_val,result,0.1,'prec')
 	#plot a figure to make a comparison
 	if figure is True:
 		func.pltCurvesFig(Y_val,result)
 	return [err_valid,err_train]
 
-train_x = np.genfromtxt('./training/train_x_V3.csv',delimiter=',')
-train_y = np.genfromtxt('./training/train_y_V3.csv',delimiter=',')
-test_x = np.genfromtxt('./testing/test_x_1.csv',delimiter=',')
-test_y = np.genfromtxt('./testing/test_y_1.csv',delimiter=',')
-fold, repeat = 5,1
+train_x = np.genfromtxt('./training/train_x_V1.csv',delimiter=',')
+train_y = np.genfromtxt('./training/train_y_V1.csv',delimiter=',')
+test_x = np.genfromtxt('./testing/test_x_total.csv',delimiter=',')
+test_y = np.genfromtxt('./testing/test_y_total.csv',delimiter=',')
+#print(train_x.shape,train_y.shape,test_x.shape,test_y.shape)
+fold, repeat = 5,3
 minErr,l = 10000,0
 error_valid,error_train = 0,0
 for lamb in [1e2,1e3,1e4,1e5,1e6,1e7]: # set a loop to choose best lambda for different versions
@@ -55,6 +56,8 @@ for lamb in [1e2,1e3,1e4,1e5,1e6,1e7]: # set a loop to choose best lambda for di
 	for k in error:
 		k /= repeat
 	[error_valid,error_train] = error
+	error_valid,error_train = 1/error_valid,1/error_train
+
 	if error_valid < minErr:		# find the smallest error and its corresponding lamb
 		minErr,l = error_valid,lamb
 print(l)

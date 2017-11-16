@@ -16,20 +16,20 @@ import mlfunc as func
 
 train_x = np.genfromtxt('./training/train_x_V3.csv',delimiter=',')
 train_y = np.genfromtxt('./training/train_y_V3.csv',delimiter=',')
-test_x = np.genfromtxt('./testing/test_x_1.csv',delimiter=',')
-test_y = np.genfromtxt('./testing/test_y_1.csv',delimiter=',')
+test_x = np.genfromtxt('./testing/test_x_total.csv',delimiter=',')
+test_y = np.genfromtxt('./testing/test_y_total.csv',delimiter=',')
 
 scaler = preprocessing.StandardScaler().fit(train_x)
 train_x = scaler.transform(train_x)
 test_x = scaler.transform(test_x)
 
 n_estimators = 10
-reg = ensemble.RandomForestRegressor(n_estimators=n_estimators)
+reg = ensemble.RandomForestRegressor(n_estimators=n_estimators,max_features=0.33)
 reg.fit(train_x,train_y)
 result = reg.predict(train_x)
-err_train = func.accuracyMeasure(train_y,result,0.8,'mae')
+err_train = func.accuracyMeasure(train_y,result,0.1,'hits')
 result = reg.predict(test_x)
-err_test = func.accuracyMeasure(test_y,result,0.8,'mae')
+err_test = func.accuracyMeasure(test_y,result,0.1,'hits')
 print(err_test,err_train)
 
 #plot a figure to compare prediction results and test_y

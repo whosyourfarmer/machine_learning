@@ -20,9 +20,12 @@ def RFRegression(X_val,Y_val,X_tra,Y_tra,percent,figure=False):
 	reg = ensemble.RandomForestRegressor(n_estimators=10,max_features=percent)
 	reg.fit(X_tra,Y_tra)
 	result = reg.predict(X_tra)
-	err_train = func.accuracyMeasure(Y_tra,result,0.1,'prec')
+	maximum = 0
+	for x in range(len(result)):
+		maximum = max(maximum,result[x])
+	err_train = func.accuracyMeasure(Y_tra,result,0.1,'prec',maximum)
 	result = reg.predict(X_val)
-	err_valid = func.accuracyMeasure(Y_val,result,0.1,'prec')
+	err_valid = func.accuracyMeasure(Y_val,result,0.1,'prec',maximum)
 	#plot a figure to make a comparison
 	if figure is True:
 		#func.pltdiffFig(Y_val,result,'absolute')

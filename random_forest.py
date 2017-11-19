@@ -27,9 +27,9 @@ n_estimators = 10
 reg = ensemble.RandomForestRegressor(n_estimators=n_estimators,max_features=0.33)
 reg.fit(train_x,train_y)
 result = reg.predict(train_x)
-err_train = func.accuracyMeasure(train_y,result,0.1,'hits')
+err_train = func.accuracyMeasure(train_y,result,0.1,'auc')
 result = reg.predict(test_x)
-err_test = func.accuracyMeasure(test_y,result,0.1,'hits')
+err_test = func.accuracyMeasure(test_y,result,0.1,'auc')
 print(err_test,err_train)
 
 #plot a figure to compare prediction results and test_y

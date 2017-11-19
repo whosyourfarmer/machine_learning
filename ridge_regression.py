@@ -16,13 +16,16 @@ import random as rd
 from sklearn.utils import shuffle
 import mlfunc as func
 
-def ridgeRegression(X_val,Y_val,X_tra,Y_tra,regur,figure):
+def ridgeRegression(X_val,Y_val,X_tra,Y_tra,regur,figure=False):
 	ridgereg = linear_model.Ridge(alpha=regur)
 	ridgereg.fit(X_tra,Y_tra)
 	result = ridgereg.predict(X_tra)
-	err_train = func.accuracyMeasure(Y_tra,result,0.1,'prec')
+	maximum = 0
+	for x in range(len(result)):
+		maximum = max(maximum,result[x])
+	err_train = func.accuracyMeasure(Y_tra,result,0.1,'prec',maximum)
 	result = ridgereg.predict(X_val)
-	err_valid = func.accuracyMeasure(Y_val,result,0.1,'prec')
+	err_valid = func.accuracyMeasure(Y_val,result,0.1,'prec',maximum)
 	#plot a figure to make a comparison
 	if figure is True:
 		func.pltCurvesFig(Y_val,result)
@@ -33,7 +36,7 @@ train_y = np.genfromtxt('./training/train_y_V1.csv',delimiter=',')
 test_x = np.genfromtxt('./testing/test_x_total.csv',delimiter=',')
 test_y = np.genfromtxt('./testing/test_y_total.csv',delimiter=',')
 #print(train_x.shape,train_y.shape,test_x.shape,test_y.shape)
-fold, repeat = 5,3
+fold, repeat = 5,1
 minErr,l = 10000,0
 error_valid,error_train = 0,0
 for lamb in [1e2,1e3,1e4,1e5,1e6,1e7]: # set a loop to choose best lambda for different versions
@@ -48,7 +51,7 @@ for lamb in [1e2,1e3,1e4,1e5,1e6,1e7]: # set a loop to choose best lambda for di
 			scaler = preprocessing.StandardScaler().fit(cross_train_x)
 			std_train_x = scaler.transform(cross_train_x)
 			std_valid_x = scaler.transform(cross_valid_x)
-			ret = ridgeRegression(std_valid_x,cross_valid_y,std_train_x,cross_train_y,lamb,False)
+			ret = ridgeRegression(std_valid_x,cross_valid_y,std_train_x,cross_train_y,lamb)
 			error_valid += ret[0]
 			error_train += ret[1]
 		error[0] += error_valid / fold

@@ -1,12 +1,27 @@
+'''
+Lin Huang EE660 Project: Facebook Comment Volume Predicition
+Regression:
+Using LASSO algorithm to predict the comment volume
+Cross Validation is used to do model selection with respect to
+different lambda
+MAE, Hits, 2 types of error measure are utilized
 
-def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data):
+Parameter:
+numOfRun: number of iterations
+numOfFold: number of folds for Cross Validation
+LAMBDA: a list of lambda we use to select the best model
+train_Data, test_Data: training/testing Dataset
+error_measure: choose a specific error measure
+ratio: ratio of the data set 
+'''
 
-    import numpy as np
-    from sklearn import preprocessing as pre
-    from sklearn.linear_model import Lasso
-    from sklearn.metrics import mean_absolute_error
-    import random
-    from sklearn.linear_model import LinearRegression
+import numpy as np
+from sklearn import preprocessing as pre
+from sklearn.linear_model import Lasso
+import random
+import Common
+
+def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data,err_measure,ratio):
 
     tr_x = train_Data[:,:-1]
     tr_y = train_Data[:,-1:]
@@ -17,7 +32,7 @@ def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data):
     k = numOfFold   # number of fold
     n = numOfRun   # number of iteration
     [numOfSamples,numOfFeature] = np.shape(tr_x)
-    subNum = int(numOfSamples / k)
+    subNum = int(numOfSamples / k) # divide training set into k subsets
     train_x = np.zeros((numOfSamples - subNum,numOfFeature))
     train_y = np.zeros((numOfSamples - subNum,1))
 
@@ -28,7 +43,7 @@ def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data):
 
     for i in range(n):
         index = [m for m in range(numOfSamples)]
-        random.shuffle(index)
+        random.shuffle(index)  # randomize training set at each iteration
         tr_x = tr_x[index]
         tr_y = tr_y[index]
 
@@ -46,19 +61,18 @@ def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data):
                 val_x = tr_x[0 + subNum * j:subNum + subNum * j,:]     # validation dataset
                 val_y = tr_y[0 + subNum * j:subNum + subNum * j,:]
 
-                scaler = pre.StandardScaler().fit(train_x)
+                scaler = pre.StandardScaler().fit(train_x)     # standardization
                 train_x_std = scaler.transform(train_x)
                 val_x_std = scaler.transform(val_x)
 
                 lasso_reg = Lasso(LAMBDA[h],fit_intercept = True)
-                #lasso_reg = LinearRegression();
                 lasso_reg.fit(train_x_std,train_y)
 
                 pred_train_y = lasso_reg.predict(train_x_std)
                 pred_val_y = lasso_reg.predict(val_x_std)
 
-                train_err.append(mean_absolute_error(train_y,pred_train_y))
-                val_err.append(mean_absolute_error(val_y,pred_val_y))
+                train_err.append(Common.errorMeasure(train_y, pred_train_y, err_measure, ratio))
+                val_err.append(Common.errorMeasure(val_y, pred_val_y, err_measure, ratio))
 
             mean_train_err[i,h] = np.mean(train_err)
             mean_val_err[i,h] = np.mean(val_err)
@@ -67,9 +81,9 @@ def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data):
         cv_train_err.append(np.mean(mean_train_err[:,i]))
         cv_val_err.append(np.mean(mean_val_err[:,i]))
 
-    best_alpha = LAMBDA[cv_val_err.index(min(cv_val_err))]
+    best_alpha = LAMBDA[cv_val_err.index(min(cv_val_err))]   # model selection
 
-    scaler = pre.StandardScaler().fit(tr_x)
+    scaler = pre.StandardScaler().fit(tr_x)    # standardization
     tr_x_std = scaler.transform(tr_x)
     te_x_std = scaler.transform(te_x)
 
@@ -80,8 +94,8 @@ def LASSO_Regressor(numOfRun,numOfFold,LAMBDA,train_Data,test_Data):
     pred_test_y = lasso_reg.predict(te_x_std)
 
     lasso_err = []
-    lasso_err.append(mean_absolute_error(tr_y, pred_train_y))
-    lasso_err.append(mean_absolute_error(te_y, pred_test_y))
+    lasso_err.append(Common.errorMeasure(tr_y, pred_train_y,err_measure,ratio))
+    lasso_err.append(Common.errorMeasure(te_y, pred_test_y,err_measure,ratio))
 
 
     return (lasso_err,best_alpha,cv_val_err,te_y,pred_test_y)

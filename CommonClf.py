@@ -51,10 +51,10 @@ def plot_output(true_y,pred_y):
     plt.show()
 
 def printResults(error,best_para,val_err):
-    print("Validation error/accuracy of all models: ", val_err)
+    print("Validation accuracy of all models: ", val_err)
     print("Best para: ", best_para)
-    print("Training error/accuracy: ", error[0])
-    print("Testing error/accuracy: ", error[1])
+    print("Training accuracy: ", error[0])
+    print("Testing accuracy: ", error[1])
 
 #Plot confusion matrix
 #reference: http://scikit-learn.org/stable/index.html
@@ -95,11 +95,15 @@ def plot_confusion_matrix(cm, classes,
     plt.xlabel('Predicted label')
 
 
-def clf_accuracy(Y_true, Y_pred,acc_measure):
+def clf_accuracy(Y_true,Y_pred,acc_measure):
 
+    # using precision as the acc_measure
+    if (acc_measure == 'precision'):
+        return metrics.precision_score(Y_true, Y_pred)
     # using recall as the acc_measure
     if (acc_measure == 'recall'):
         return metrics.recall_score(Y_true, Y_pred)
+
     # compute confusion matrix and plot the results
     if (acc_measure == 'cnf'):
         target = np.array(['Class 0','Class 1'])
@@ -112,11 +116,28 @@ def clf_accuracy(Y_true, Y_pred,acc_measure):
                               title='Confusion matrix, without normalization')
 
         # Plot normalized confusion matrix
-        plt.figure()
-        plot_confusion_matrix(cnf_matrix, classes=target, normalize=True,
-                              title='Normalized confusion matrix')
+        #plt.figure()
+        #plot_confusion_matrix(cnf_matrix, classes=target, normalize=True,
+        #                      title='Normalized confusion matrix')
 
         #plt.show()
         return
-    if (acc_measure == 'AUC'):
-        return
+
+def AUC_Measure(Y_true,Y_score):
+
+    # Compute ROC curve and ROC area for each class
+    (fpr, tpr, _) = metrics.roc_curve(Y_true, Y_score[:,1])
+    roc_auc = metrics.auc(fpr, tpr)
+
+    plt.figure()
+    lw = 2
+    plt.plot(fpr, tpr, color='darkorange',
+             lw=lw, label='ROC curve (area = %0.2f)' % roc_auc)
+    plt.plot([0, 1], [0, 1], color='navy', lw=lw, linestyle='--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic example')
+    plt.legend(loc="lower right")
+    plt.show()

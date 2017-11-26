@@ -23,12 +23,12 @@ def OMPRegression(X_val,Y_val,X_tra,Y_tra,percent,figure=False):
 	maximum = 0
 	for x in range(len(result)):
 		maximum = max(maximum,result[x])
-	err_train = func.accuracyMeasure(Y_tra,result,0.1,'prec',maximum)
+	err_train = func.accuracyMeasure(Y_tra,result,0.1,'auc',maximum)
 	result = reg.predict(X_val)
-	err_valid = func.accuracyMeasure(Y_val,result,0.1,'prec',maximum)
+	err_valid = func.accuracyMeasure(Y_val,result,0.1,'auc',maximum)
 	#plot a figure to make a comparison
 	if figure is True:
-		#func.pltdiffFig(Y_val,result,'absolute')
+		func.pltdiffFig(Y_val,result,'absolute')
 		func.pltCurvesFig(Y_val,result)
 		print('nonzero_coefs:',int(percent*X_tra.shape[1]))
 	return [err_valid,err_train]
@@ -60,8 +60,8 @@ for lamb in [0.1,0.3,0.5,0.6,0.7,0.8,0.9,0.95]: # set a loop to choose best lamb
 	for k in error:
 		k /= repeat
 	[error_valid,error_train] = error
-	error_valid,error_train = 1/error_valid,1/error_train
-
+	print(lamb,error_valid,error_train)
+	error_valid,error_train = 1/error_valid,1/error_train #need to comment out when mae, mse
 	if error_valid < minErr:		# find the smallest error and its corresponding lamb
 		minErr,l = error_valid,lamb
 print(l)

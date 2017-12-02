@@ -1,6 +1,7 @@
 import CommonCluster
 import K_means
 import GMMCluster
+import AggloCluster
 import numpy as np
 from collections import Counter
 
@@ -16,15 +17,27 @@ train_y = np.ravel(train_y)
 test_y = test_data[:, -1:]
 test_y = np.ravel(test_y)
 
-numOfClusters = 10
-numOfComponents = 10
+category = CommonCluster.readFeature4('/Users/linhuang/Desktop/Lin_Work/EE660_Project/Data/Training/Features_Variant_1.csv')
+category = np.ravel(category)
+
+clusters_vector = [14,15,16,17,18,19,20]
 
 #np.set_printoptions(threshold=np.nan)
-# K_means
-#label = K_means.Kmeans(tr_x,128,numOfClusters)
-#CommonCluster.findCluster(label,numOfClusters)
-
 
 # GMM
-label = GMMCluster.gmm_cluster(tr_x,127,numOfComponents)
-CommonCluster.findCluster(label,numOfComponents)
+#[label,bic,best_NumOfCom] = GMMCluster.gmm_cluster(tr_x,127,clusters_vector)
+#CommonCluster.findCluster(label,best_NumOfCom,train_y,category)
+#print(best_NumOfCom)
+#print(bic)
+
+# Agglomerative
+#[label,ch,best_NumOfClu] = AggloCluster.Agg_cluster(tr_x,127,clusters_vector)
+#CommonCluster.findCluster(label,best_NumOfClu,train_y,category)
+#print(best_NumOfClu)
+#print(ch)
+
+# K_means
+[label,ch,best_NumOfClu] = K_means.Kmeans(tr_x,127,clusters_vector)
+CommonCluster.findCluster(label,best_NumOfClu,train_y,category)
+print(best_NumOfClu)
+print(ch)
